@@ -39,7 +39,7 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch("https://hook.us1.make.com/YOUR_CONTACT_WEBHOOK_URL", {
+      const response = await fetch("https://hook.us2.make.com/ennju6m6o423htrx5yom1og2d741c5ri", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
