@@ -1,6 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-
 const Hero = () => {
   return (
     <div className="relative min-h-[80vh] flex items-center justify-center bg-kpt-dark text-white px-4">
@@ -17,12 +14,6 @@ const Hero = () => {
         <p className="text-kpt-silver text-lg md:text-xl max-w-2xl mx-auto mb-8">
           Empowering businesses to confidently embrace AI technology with expert guidance and simplified solutions.
         </p>
-        <Button 
-          className="bg-kpt-gold hover:bg-kpt-gold/90 text-kpt-dark font-semibold px-8 py-6 text-lg group"
-        >
-          Get Started
-          <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-        </Button>
       </div>
     </div>
   );
