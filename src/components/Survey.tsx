@@ -15,6 +15,8 @@ interface SurveyData {
   resources: string;
   industry: string;
   otherIndustry?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
 }
 
@@ -22,7 +24,7 @@ const Survey = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedChallenges, setSelectedChallenges] = useState<string[]>([]);
-  const { register, handleSubmit, watch } = useForm<SurveyData>();
+  const { register, handleSubmit, watch, getValues } = useForm<SurveyData>();
 
   const challenges = [
     "Access to funding and capital",
@@ -87,9 +89,19 @@ const Survey = () => {
 
       if (response.ok) {
         toast({
-          title: "Survey Submitted",
-          description: "Thank you for participating in our survey!",
+          title: "Thank you for taking the time to complete my survey.",
+          description: "If you have questions about KPT Social please leave your message below.",
         });
+
+        // Trigger the auto-fill of the contact form
+        const event = new CustomEvent('surveyCompleted', {
+          detail: {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email
+          }
+        });
+        window.dispatchEvent(event);
       } else {
         throw new Error("Failed to submit survey");
       }
@@ -136,6 +148,18 @@ const Survey = () => {
           <h3 className="text-lg font-semibold text-kpt-dark">
             Would you like to receive tailored resources? (Optional)
           </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              {...register("firstName")}
+              placeholder="First Name"
+              className="bg-white text-kpt-dark placeholder:text-kpt-dark/60"
+            />
+            <Input
+              {...register("lastName")}
+              placeholder="Last Name (Optional)"
+              className="bg-white text-kpt-dark placeholder:text-kpt-dark/60"
+            />
+          </div>
           <Input
             {...register("email")}
             type="email"

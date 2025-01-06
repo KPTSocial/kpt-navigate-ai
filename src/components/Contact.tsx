@@ -2,9 +2,36 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { useEffect, useState } from "react";
 
 const Contact = () => {
   const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    subject: "",
+    message: ""
+  });
+
+  useEffect(() => {
+    const handleSurveyCompleted = (event: CustomEvent) => {
+      const { firstName, lastName, email } = event.detail;
+      if (firstName || lastName || email) {
+        setFormData(prev => ({
+          ...prev,
+          firstName: firstName || "",
+          lastName: lastName || "",
+          email: email || ""
+        }));
+      }
+    };
+
+    window.addEventListener('surveyCompleted', handleSurveyCompleted as EventListener);
+    return () => {
+      window.removeEventListener('surveyCompleted', handleSurveyCompleted as EventListener);
+    };
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -12,6 +39,14 @@ const Contact = () => {
       title: "Message sent!",
       description: "We'll get back to you as soon as possible.",
     });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   return (
@@ -28,20 +63,39 @@ const Contact = () => {
         <form onSubmit={handleSubmit} className="max-w-xl mx-auto space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input
-              placeholder="Name"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleInputChange}
+              placeholder="First Name"
               className="bg-white/5 border-kpt-silver/20 text-white"
             />
             <Input
-              type="email"
-              placeholder="Email"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleInputChange}
+              placeholder="Last Name"
               className="bg-white/5 border-kpt-silver/20 text-white"
             />
           </div>
           <Input
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            placeholder="Email"
+            className="bg-white/5 border-kpt-silver/20 text-white"
+          />
+          <Input
+            name="subject"
+            value={formData.subject}
+            onChange={handleInputChange}
             placeholder="Subject"
             className="bg-white/5 border-kpt-silver/20 text-white"
           />
           <Textarea
+            name="message"
+            value={formData.message}
+            onChange={handleInputChange}
             placeholder="Message"
             className="bg-white/5 border-kpt-silver/20 text-white h-32"
           />
