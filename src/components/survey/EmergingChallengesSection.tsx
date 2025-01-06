@@ -1,6 +1,7 @@
 import React from "react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
 
 interface EmergingChallengesSectionProps {
   emergingChallenges: string[];
@@ -11,17 +12,41 @@ const EmergingChallengesSection = ({
   emergingChallenges,
   register,
 }: EmergingChallengesSectionProps) => {
+  const { toast } = useToast();
+  const [selectedChallenges, setSelectedChallenges] = React.useState<string[]>([]);
+
+  const handleChallengeChange = (checked: boolean, value: string) => {
+    if (checked) {
+      if (selectedChallenges.length < 2) {
+        setSelectedChallenges([...selectedChallenges, value]);
+      } else {
+        toast({
+          title: "Maximum Selection Reached",
+          description: "Please select only up to 2 challenges",
+          variant: "destructive",
+        });
+      }
+    } else {
+      setSelectedChallenges(selectedChallenges.filter((c) => c !== value));
+    }
+  };
+
+  React.useEffect(() => {
+    register("emergingChallenge", { value: selectedChallenges });
+  }, [selectedChallenges, register]);
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold text-kpt-dark">
-        Which of the following emerging challenges for 2025 concerns you the most? (Choose 1)
+        Which of the following emerging challenges for 2025 concerns you the most? (Choose 2)
       </h3>
-      <RadioGroup {...register("emergingChallenge", { required: true })}>
+      <div className="space-y-2">
         {emergingChallenges.map((challenge) => (
           <div key={challenge} className="flex items-center space-x-2">
-            <RadioGroupItem
-              value={challenge}
+            <Checkbox
               id={`emerging-${challenge}`}
+              checked={selectedChallenges.includes(challenge)}
+              onCheckedChange={(checked) => handleChallengeChange(checked as boolean, challenge)}
               className="border-kpt-dark"
             />
             <Label htmlFor={`emerging-${challenge}`} className="text-kpt-dark">
@@ -29,7 +54,7 @@ const EmergingChallengesSection = ({
             </Label>
           </div>
         ))}
-      </RadioGroup>
+      </div>
     </div>
   );
 };
