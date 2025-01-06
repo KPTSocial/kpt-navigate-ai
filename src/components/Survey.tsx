@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import SurveyHeader from "./survey/SurveyHeader";
+import ChallengesSection from "./survey/ChallengesSection";
+import EmergingChallengesSection from "./survey/EmergingChallengesSection";
+import ResourcesSection from "./survey/ResourcesSection";
+import IndustrySection from "./survey/IndustrySection";
 
 interface SurveyData {
   challenges: string[];
@@ -22,8 +23,6 @@ const Survey = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedChallenges, setSelectedChallenges] = useState<string[]>([]);
   const { register, handleSubmit, watch } = useForm<SurveyData>();
-
-  const industry = watch("industry");
 
   const challenges = [
     "Access to funding and capital",
@@ -111,77 +110,27 @@ const Survey = () => {
       onSubmit={handleSubmit(onSubmit)} 
       className="max-w-2xl mx-auto space-y-8 p-6 bg-kpt-gold rounded-lg shadow-lg"
     >
-      <div className="text-center space-y-4">
-        <h2 className="text-2xl font-bold text-kpt-dark">Business Owner Survey 2025</h2>
-        <p className="text-kpt-dark">
-          Thank you for participating in this quick survey! Your responses will help us better understand
-          the common challenges faced by new business owners and provide solutions tailored to your needs.
-        </p>
-      </div>
+      <SurveyHeader />
 
       <div className="space-y-6">
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-kpt-dark">
-            What are your top 3 challenges as a new business owner? (Choose up to 3)
-          </h3>
-          <div className="grid gap-4">
-            {challenges.map((challenge) => (
-              <div key={challenge} className="flex items-center space-x-2">
-                <Checkbox
-                  id={challenge}
-                  checked={selectedChallenges.includes(challenge)}
-                  onCheckedChange={(checked) => handleChallengeChange(checked as boolean, challenge)}
-                  className="border-kpt-dark"
-                />
-                <Label htmlFor={challenge} className="text-kpt-dark">{challenge}</Label>
-              </div>
-            ))}
-          </div>
-        </div>
+        <ChallengesSection
+          challenges={challenges}
+          selectedChallenges={selectedChallenges}
+          onChallengeChange={handleChallengeChange}
+        />
 
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-kpt-dark">
-            Which of the following emerging challenges for 2025 concerns you the most? (Choose 1)
-          </h3>
-          <RadioGroup {...register("emergingChallenge", { required: true })}>
-            {emergingChallenges.map((challenge) => (
-              <div key={challenge} className="flex items-center space-x-2">
-                <RadioGroupItem value={challenge} id={`emerging-${challenge}`} className="border-kpt-dark" />
-                <Label htmlFor={`emerging-${challenge}`} className="text-kpt-dark">{challenge}</Label>
-              </div>
-            ))}
-          </RadioGroup>
-        </div>
+        <EmergingChallengesSection
+          emergingChallenges={emergingChallenges}
+          register={register}
+        />
 
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-kpt-dark">
-            What specific resources or support would help you the most?
-          </h3>
-          <Textarea
-            {...register("resources", { required: true })}
-            placeholder="Example: Access to affordable loans or Training in digital marketing tools"
-            className="min-h-[100px] bg-white text-kpt-dark placeholder:text-kpt-dark/60"
-          />
-        </div>
+        <ResourcesSection register={register} />
 
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-kpt-dark">What industry or niche is your business in?</h3>
-          <RadioGroup {...register("industry", { required: true })}>
-            {industries.map((ind) => (
-              <div key={ind} className="flex items-center space-x-2">
-                <RadioGroupItem value={ind} id={`industry-${ind}`} className="border-kpt-dark" />
-                <Label htmlFor={`industry-${ind}`} className="text-kpt-dark">{ind}</Label>
-              </div>
-            ))}
-          </RadioGroup>
-          {watch("industry") === "Other" && (
-            <Input
-              {...register("otherIndustry")}
-              placeholder="Please specify your industry"
-              className="mt-2 bg-white text-kpt-dark placeholder:text-kpt-dark/60"
-            />
-          )}
-        </div>
+        <IndustrySection
+          industries={industries}
+          register={register}
+          watch={watch}
+        />
 
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-kpt-dark">
@@ -193,9 +142,20 @@ const Survey = () => {
             placeholder="Enter your email address"
             className="bg-white text-kpt-dark placeholder:text-kpt-dark/60"
           />
-          <p className="text-sm text-kpt-dark/80">
-            Your response will remain confidential and will not be shared.
-          </p>
+          <div className="text-sm text-kpt-dark/80 space-y-2">
+            <p>Your response will remain confidential and will not be shared.</p>
+            <p>
+              By submitting this form, you agree to our{" "}
+              <a 
+                href="https://s3.privyr.com/privacy/privacy-policy.html?d=eyJlbWFpbCI6InRpbW90aHl0QGtwdHNvY2lhbC5jb20iLCJjb21wYW55IjoiS1BUIFNvY2lhbCIsImdlbl9hdCI6IjIwMjQtMDktMjVUMDA6MDM6MzkuNDU3WiJ9"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-kpt-dark underline hover:text-kpt-dark/80"
+              >
+                Privacy Policy
+              </a>
+            </p>
+          </div>
         </div>
       </div>
 
