@@ -107,10 +107,13 @@ const Survey = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl mx-auto space-y-8 p-6">
+    <form 
+      onSubmit={handleSubmit(onSubmit)} 
+      className="max-w-2xl mx-auto space-y-8 p-6 bg-kpt-gold rounded-lg shadow-lg"
+    >
       <div className="text-center space-y-4">
-        <h2 className="text-2xl font-bold">Business Owner Survey 2025</h2>
-        <p className="text-muted-foreground">
+        <h2 className="text-2xl font-bold text-kpt-dark">Business Owner Survey 2025</h2>
+        <p className="text-kpt-dark">
           Thank you for participating in this quick survey! Your responses will help us better understand
           the common challenges faced by new business owners and provide solutions tailored to your needs.
         </p>
@@ -118,7 +121,7 @@ const Survey = () => {
 
       <div className="space-y-6">
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">
+          <h3 className="text-lg font-semibold text-kpt-dark">
             What are your top 3 challenges as a new business owner? (Choose up to 3)
           </h3>
           <div className="grid gap-4">
@@ -128,73 +131,79 @@ const Survey = () => {
                   id={challenge}
                   checked={selectedChallenges.includes(challenge)}
                   onCheckedChange={(checked) => handleChallengeChange(checked as boolean, challenge)}
+                  className="border-kpt-dark"
                 />
-                <Label htmlFor={challenge}>{challenge}</Label>
+                <Label htmlFor={challenge} className="text-kpt-dark">{challenge}</Label>
               </div>
             ))}
           </div>
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">
+          <h3 className="text-lg font-semibold text-kpt-dark">
             Which of the following emerging challenges for 2025 concerns you the most? (Choose 1)
           </h3>
           <RadioGroup {...register("emergingChallenge", { required: true })}>
             {emergingChallenges.map((challenge) => (
               <div key={challenge} className="flex items-center space-x-2">
-                <RadioGroupItem value={challenge} id={`emerging-${challenge}`} />
-                <Label htmlFor={`emerging-${challenge}`}>{challenge}</Label>
+                <RadioGroupItem value={challenge} id={`emerging-${challenge}`} className="border-kpt-dark" />
+                <Label htmlFor={`emerging-${challenge}`} className="text-kpt-dark">{challenge}</Label>
               </div>
             ))}
           </RadioGroup>
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">
+          <h3 className="text-lg font-semibold text-kpt-dark">
             What specific resources or support would help you the most?
           </h3>
           <Textarea
             {...register("resources", { required: true })}
             placeholder="Example: Access to affordable loans or Training in digital marketing tools"
-            className="min-h-[100px]"
+            className="min-h-[100px] bg-white text-kpt-dark placeholder:text-kpt-dark/60"
           />
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">What industry or niche is your business in?</h3>
+          <h3 className="text-lg font-semibold text-kpt-dark">What industry or niche is your business in?</h3>
           <RadioGroup {...register("industry", { required: true })}>
             {industries.map((ind) => (
               <div key={ind} className="flex items-center space-x-2">
-                <RadioGroupItem value={ind} id={`industry-${ind}`} />
-                <Label htmlFor={`industry-${ind}`}>{ind}</Label>
+                <RadioGroupItem value={ind} id={`industry-${ind}`} className="border-kpt-dark" />
+                <Label htmlFor={`industry-${ind}`} className="text-kpt-dark">{ind}</Label>
               </div>
             ))}
           </RadioGroup>
-          {industry === "Other" && (
+          {watch("industry") === "Other" && (
             <Input
               {...register("otherIndustry")}
               placeholder="Please specify your industry"
-              className="mt-2"
+              className="mt-2 bg-white text-kpt-dark placeholder:text-kpt-dark/60"
             />
           )}
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">
+          <h3 className="text-lg font-semibold text-kpt-dark">
             Would you like to receive tailored resources? (Optional)
           </h3>
           <Input
             {...register("email")}
             type="email"
             placeholder="Enter your email address"
+            className="bg-white text-kpt-dark placeholder:text-kpt-dark/60"
           />
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-kpt-dark/80">
             Your response will remain confidential and will not be shared.
           </p>
         </div>
       </div>
 
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
+      <Button 
+        type="submit" 
+        className="w-full bg-kpt-dark text-white hover:bg-kpt-dark/90" 
+        disabled={isSubmitting}
+      >
         {isSubmitting ? "Submitting..." : "Submit Survey"}
       </Button>
     </form>
