@@ -75,7 +75,7 @@ const Survey = () => {
     console.log("Submitting survey data:", { ...data, challenges: selectedChallenges });
 
     try {
-      const response = await fetch("https://hook.us1.make.com/YOUR_SURVEY_WEBHOOK_URL", {
+      const response = await fetch("https://hook.us2.make.com/9hueg4pdetgfk88iqf485d9bo6yh2v63", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
