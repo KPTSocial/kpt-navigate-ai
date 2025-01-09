@@ -11,6 +11,7 @@ const Contact = () => {
     firstName: "",
     lastName: "",
     email: "",
+    phone: "",
     subject: "",
     message: ""
   });
@@ -55,11 +56,12 @@ const Contact = () => {
           title: "Message sent!",
           description: "We'll get back to you as soon as possible.",
         });
-        // Optionally reset form
+        // Reset form
         setFormData({
           firstName: "",
           lastName: "",
           email: "",
+          phone: "",
           subject: "",
           message: ""
         });
@@ -114,14 +116,24 @@ const Contact = () => {
               className="bg-white/5 border-kpt-silver/20 text-white"
             />
           </div>
-          <Input
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            placeholder="Email"
-            className="bg-white/5 border-kpt-silver/20 text-white"
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Input
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="Email"
+              className="bg-white/5 border-kpt-silver/20 text-white"
+            />
+            <Input
+              name="phone"
+              type="tel"
+              value={formData.phone}
+              onChange={handleInputChange}
+              placeholder="Phone Number"
+              className="bg-white/5 border-kpt-silver/20 text-white"
+            />
+          </div>
           <Input
             name="subject"
             value={formData.subject}
