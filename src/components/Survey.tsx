@@ -71,6 +71,7 @@ const Survey = () => {
   };
 
   const onSubmit = async (data: SurveyData) => {
+    console.log("Form submission started", { data, selectedChallenges });
     setIsSubmitting(true);
     
     // Format the data according to the spreadsheet structure
@@ -99,6 +100,7 @@ const Survey = () => {
     console.log("Formatted survey data:", formattedData);
 
     try {
+      console.log("Sending request to webhook...");
       const response = await fetch("https://hook.us2.make.com/9hueg4pdetgfk88iqf485d9bo6yh2v63", {
         method: "POST",
         headers: {
@@ -107,7 +109,14 @@ const Survey = () => {
         body: JSON.stringify(formattedData),
       });
 
+      console.log("Webhook response:", response);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       if (response.ok) {
+        console.log("Survey submitted successfully");
         toast({
           title: "Thank you for taking the time to complete my survey.",
           description: "If you have questions about KPT Social please leave your message below.",
@@ -122,8 +131,6 @@ const Survey = () => {
           }
         });
         window.dispatchEvent(event);
-      } else {
-        throw new Error("Failed to submit survey");
       }
     } catch (error) {
       console.error("Error submitting survey:", error);
