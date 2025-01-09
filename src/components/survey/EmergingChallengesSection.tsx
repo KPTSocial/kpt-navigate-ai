@@ -16,9 +16,15 @@ const EmergingChallengesSection = ({
   const [selectedChallenges, setSelectedChallenges] = React.useState<string[]>([]);
 
   const handleChallengeChange = (checked: boolean, value: string) => {
+    console.log('Emerging challenge selection changed:', { checked, value });
     if (checked) {
       if (selectedChallenges.length < 2) {
-        setSelectedChallenges([...selectedChallenges, value]);
+        const newSelected = [...selectedChallenges, value];
+        setSelectedChallenges(newSelected);
+        // Update the form value
+        register("emergingChallenge").onChange({
+          target: { value: newSelected, name: "emergingChallenge" }
+        });
       } else {
         toast({
           title: "Maximum Selection Reached",
@@ -27,13 +33,14 @@ const EmergingChallengesSection = ({
         });
       }
     } else {
-      setSelectedChallenges(selectedChallenges.filter((c) => c !== value));
+      const newSelected = selectedChallenges.filter((c) => c !== value);
+      setSelectedChallenges(newSelected);
+      // Update the form value
+      register("emergingChallenge").onChange({
+        target: { value: newSelected, name: "emergingChallenge" }
+      });
     }
   };
-
-  React.useEffect(() => {
-    register("emergingChallenge", { value: selectedChallenges });
-  }, [selectedChallenges, register]);
 
   return (
     <div className="space-y-4">
