@@ -20,10 +20,10 @@ const EmergingChallengesSection = ({
     if (checked) {
       if (selectedChallenges.length < 2) {
         const newSelected = [...selectedChallenges, value];
+        console.log('New emerging challenges selected:', newSelected);
         setSelectedChallenges(newSelected);
-        // Update the form value
         register("emergingChallenge").onChange({
-          target: { value: newSelected, name: "emergingChallenge" }
+          target: { name: "emergingChallenge", value: newSelected }
         });
       } else {
         toast({
@@ -34,10 +34,10 @@ const EmergingChallengesSection = ({
       }
     } else {
       const newSelected = selectedChallenges.filter((c) => c !== value);
+      console.log('Emerging challenge unselected, new selection:', newSelected);
       setSelectedChallenges(newSelected);
-      // Update the form value
       register("emergingChallenge").onChange({
-        target: { value: newSelected, name: "emergingChallenge" }
+        target: { name: "emergingChallenge", value: newSelected }
       });
     }
   };

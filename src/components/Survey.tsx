@@ -103,9 +103,9 @@ const Survey = () => {
       topChallenge1: selectedChallenges[0] || "",
       topChallenge2: selectedChallenges[1] || "",
       topChallenge3: selectedChallenges[2] || "",
-      emergingChallenge1: data.emergingChallenge[0] || "",
-      emergingChallenge2: data.emergingChallenge[1] || "",
-      specificResources: data.resources,
+      emergingChallenge1: data.emergingChallenge?.[0] || "",
+      emergingChallenge2: data.emergingChallenge?.[1] || "",
+      specificResources: data.resources || "",
       industry: data.industry === "Other" ? data.otherIndustry : data.industry
     };
 
