@@ -11,7 +11,7 @@ import IndustrySection from "./survey/IndustrySection";
 
 interface SurveyData {
   challenges: string[];
-  emergingChallenge: string;
+  emergingChallenge: string[];
   resources: string;
   industry: string;
   otherIndustry?: string;
@@ -72,7 +72,31 @@ const Survey = () => {
 
   const onSubmit = async (data: SurveyData) => {
     setIsSubmitting(true);
-    console.log("Submitting survey data:", { ...data, challenges: selectedChallenges });
+    
+    // Format the data according to the spreadsheet structure
+    const formattedData = {
+      name: data.firstName && data.lastName 
+        ? `${data.firstName} ${data.lastName}`
+        : data.firstName || "Anonymous",
+      email: data.email || "Not provided",
+      timestamp: new Date().toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      }),
+      topChallenge1: selectedChallenges[0] || "",
+      topChallenge2: selectedChallenges[1] || "",
+      topChallenge3: selectedChallenges[2] || "",
+      emergingChallenge1: data.emergingChallenge[0] || "",
+      emergingChallenge2: data.emergingChallenge[1] || "",
+      specificResources: data.resources,
+      industry: data.industry === "Other" ? data.otherIndustry : data.industry
+    };
+
+    console.log("Formatted survey data:", formattedData);
 
     try {
       const response = await fetch("https://hook.us2.make.com/9hueg4pdetgfk88iqf485d9bo6yh2v63", {
@@ -80,11 +104,7 @@ const Survey = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...data,
-          challenges: selectedChallenges,
-          submittedAt: new Date().toISOString(),
-        }),
+        body: JSON.stringify(formattedData),
       });
 
       if (response.ok) {
