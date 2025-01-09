@@ -24,7 +24,7 @@ const Survey = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedChallenges, setSelectedChallenges] = useState<string[]>([]);
-  const { register, handleSubmit, watch, getValues } = useForm<SurveyData>();
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<SurveyData>();
 
   const challenges = [
     "Access to funding and capital",
@@ -55,6 +55,7 @@ const Survey = () => {
   ];
 
   const handleChallengeChange = (checked: boolean, value: string) => {
+    console.log('Challenge selection changed:', { checked, value });
     if (checked) {
       if (selectedChallenges.length < 3) {
         setSelectedChallenges([...selectedChallenges, value]);
@@ -72,9 +73,20 @@ const Survey = () => {
 
   const onSubmit = async (data: SurveyData) => {
     console.log("Form submission started", { data, selectedChallenges });
-    setIsSubmitting(true);
     
-    // Format the data according to the spreadsheet structure
+    if (selectedChallenges.length === 0) {
+      console.log("No challenges selected");
+      toast({
+        title: "Please select at least one challenge",
+        description: "You must select at least one challenge to submit the survey",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    console.log("Setting isSubmitting to true");
+    
     const formattedData = {
       name: data.firstName && data.lastName 
         ? `${data.firstName} ${data.lastName}`
@@ -100,38 +112,40 @@ const Survey = () => {
     console.log("Formatted survey data:", formattedData);
 
     try {
-      console.log("Sending request to webhook...");
+      console.log("Attempting to send request to webhook...");
       const response = await fetch("https://hook.us2.make.com/9hueg4pdetgfk88iqf485d9bo6yh2v63", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
         },
         body: JSON.stringify(formattedData),
       });
 
-      console.log("Webhook response:", response);
+      console.log("Webhook response status:", response.status);
+      const responseData = await response.text();
+      console.log("Webhook response data:", responseData);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      if (response.ok) {
-        console.log("Survey submitted successfully");
-        toast({
-          title: "Thank you for taking the time to complete my survey.",
-          description: "If you have questions about KPT Social please leave your message below.",
-        });
+      console.log("Survey submitted successfully");
+      toast({
+        title: "Thank you for taking the time to complete my survey.",
+        description: "If you have questions about KPT Social please leave your message below.",
+      });
 
-        // Trigger the auto-fill of the contact form
-        const event = new CustomEvent('surveyCompleted', {
-          detail: {
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email
-          }
-        });
-        window.dispatchEvent(event);
-      }
+      // Trigger the auto-fill of the contact form
+      const event = new CustomEvent('surveyCompleted', {
+        detail: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email
+        }
+      });
+      window.dispatchEvent(event);
+      
     } catch (error) {
       console.error("Error submitting survey:", error);
       toast({
@@ -140,6 +154,7 @@ const Survey = () => {
         variant: "destructive",
       });
     } finally {
+      console.log("Setting isSubmitting to false");
       setIsSubmitting(false);
     }
   };
